@@ -15,7 +15,7 @@ import (
 // read and write requests.
 // In case nil is provided for read or write handler the respective
 // operation is disabled.
-func NewServer(readHandler func(filename string, rf io.ReaderFrom) error,
+func NewServer(readHandler func(clientaddr *net.UDPAddr, filename string, rf io.ReaderFrom) error,
 	writeHandler func(filename string, wt io.WriterTo) error) *Server {
 	return &Server{
 		readHandler:  readHandler,
@@ -37,7 +37,7 @@ type RequestPacketInfo interface {
 }
 
 type Server struct {
-	readHandler  func(filename string, rf io.ReaderFrom) error
+	readHandler  func(clientAddr *net.UDPAddr, filename string, rf io.ReaderFrom) error
 	writeHandler func(filename string, wt io.WriterTo) error
 	backoff      backoffFunc
 	conn         *net.UDPConn
@@ -268,7 +268,7 @@ func (s *Server) handlePacket(localAddr net.IP, remoteAddr *net.UDPAddr, buffer 
 		s.wg.Add(1)
 		go func() {
 			if s.readHandler != nil {
-				err := s.readHandler(filename, rf)
+				err := s.readHandler(remoteAddr, filename, rf)
 				if err != nil {
 					rf.abort(err)
 				}

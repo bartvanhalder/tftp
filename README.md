@@ -1,8 +1,7 @@
 TFTP server and client library for Golang
 =========================================
 
-[![GoDoc](https://godoc.org/github.com/pin/tftp?status.svg)](https://godoc.org/github.com/pin/tftp)
-[![Build Status](https://travis-ci.org/pin/tftp.svg?branch=master)](https://travis-ci.org/pin/tftp)
+forked from github.com/pin/tftp because i want to know who i'm talking to and i have to change the interface of the library to do that.
 
 Implements:
  * [RFC 1350](https://tools.ietf.org/html/rfc1350) - The TFTP Protocol (Revision 2)
@@ -29,7 +28,7 @@ TFTP Server
 ```go
 
 // readHandler is called when client starts file download from server
-func readHandler(filename string, rf io.ReaderFrom) error {
+func readHandler(fromAddr *net.UDPAddr, filename string, rf io.ReaderFrom) error {
 	file, err := os.Open(filename)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
